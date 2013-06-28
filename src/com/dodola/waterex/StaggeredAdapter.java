@@ -1,4 +1,4 @@
-package com.example.staggeredgridviewdemo;
+package com.dodola.waterex;
 
 import java.util.LinkedList;
 import java.util.List;
