@@ -47,10 +47,8 @@ public class MainActivity extends Activity {
 
         int margin = getResources().getDimensionPixelSize(R.dimen.margin);
 
-        gridView.setItemMargin(margin); // set the GridView margin
+        gridView.setItemMargin(1,1,1,1); // set the GridView margin
 
-        gridView.setPadding(margin, 0, margin, 0); // have the margin on the
-                                                   // sides as well
 
         mAdapter = new StaggeredAdapter(MainActivity.this, mImageFetcher);
         gridView.setAdapter(mAdapter);
