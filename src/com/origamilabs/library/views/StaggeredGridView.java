@@ -154,6 +154,9 @@ public class StaggeredGridView extends ViewGroup {
     private boolean mBeginClick;
     private boolean mSmoothScrollbarEnabled = true;
 
+    private FastScroller mFastScroller;
+    private boolean mFastScrollEnabled = true;
+
     private int mTouchMode;
     private final VelocityTracker mVelocityTracker = VelocityTracker.obtain();
     private final ScrollerCompat mScroller;
@@ -347,6 +350,20 @@ public class StaggeredGridView extends ViewGroup {
         }
     }
 
+    public void setFastScrollEnabled(boolean enabled) {
+        mFastScrollEnabled = enabled;
+        if (enabled) {
+            if (mFastScroller == null) {
+                mFastScroller = new FastScroller(getContext(), this);
+            }
+        } else {
+            if (mFastScroller != null) {
+                mFastScroller.stop();
+                mFastScroller = null;
+            }
+        }
+    }
+
     @Override
     protected int computeVerticalScrollExtent() {
         final int count = getChildCount();
@@ -517,6 +534,14 @@ public class StaggeredGridView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        if (mFastScroller != null) {
+            boolean intercepted = mFastScroller.onInterceptTouchEvent(ev);
+            if (intercepted) {
+                return true;
+            }
+        }
+
         mVelocityTracker.addMovement(ev);
         final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
         switch (action) {
@@ -563,6 +588,12 @@ public class StaggeredGridView extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mFastScroller != null) {
+            boolean intercepted = mFastScroller.onInterceptTouchEvent(ev);
+            if (intercepted) {
+                return true;
+            }
+        }
         mVelocityTracker.addMovement(ev);
         final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
 
@@ -742,6 +773,19 @@ public class StaggeredGridView extends ViewGroup {
             break;
         }
         return true;
+    }
+
+    public int getCount() {
+        return mItemCount;
+    }
+
+    // TODO:
+    public void setSelection(int position) {
+
+    }
+
+    // TODO:
+    void reportScrollStateChange(int newState) {
     }
 
     /**
@@ -993,7 +1037,18 @@ public class StaggeredGridView extends ViewGroup {
                 invalidate();
             }
         }
-
+        if (mFastScroller != null) {
+            final int scrollY = this.getScrollY();
+            if (scrollY != 0) {
+                // Pin to the top/bottom during overscroll
+                int restoreCount = canvas.save();
+                canvas.translate(0, (float) scrollY);
+                mFastScroller.draw(canvas);
+                canvas.restoreToCount(restoreCount);
+            } else {
+                mFastScroller.draw(canvas);
+            }
+        }
         // drawSelector(canvas);
     }
 
@@ -2156,6 +2211,7 @@ public class StaggeredGridView extends ViewGroup {
     private class AdapterDataSetObserver extends DataSetObserver {
         @Override
         public void onChanged() {
+          
             mDataChanged = true;
             mItemCount = mAdapter.getCount();
 

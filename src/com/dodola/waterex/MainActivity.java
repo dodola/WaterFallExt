@@ -48,14 +48,13 @@ public class MainActivity extends Activity {
         int margin = getResources().getDimensionPixelSize(R.dimen.margin);
 
         gridView.setItemMargin(1,1,1,1); // set the GridView margin
-
+        gridView.setFastScrollEnabled(true);
 
         mAdapter = new StaggeredAdapter(MainActivity.this, mImageFetcher);
         gridView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
         AddItemToContainer(1, 1);
         AddItemToContainer(2, 1);
-
         AddItemToContainer(3, 1);
 
         
