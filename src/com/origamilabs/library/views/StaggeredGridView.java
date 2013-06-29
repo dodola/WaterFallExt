@@ -170,6 +170,25 @@ public class StaggeredGridView extends ViewGroup {
 
 	private ContextMenuInfo mContextMenuInfo = null;
 	private OnScrollListener mOnScrollListener;
+
+	private boolean mAreAllItemsSelectable = true;
+	int mNextSelectedPosition = INVALID_POSITION;
+	public static final long INVALID_ROW_ID = Long.MIN_VALUE;
+	/**
+	 * The item id of the item to select during the next layout.
+	 */
+	long mNextSelectedRowId = INVALID_ROW_ID;
+
+	/**
+	 * The position within the adapter's data set of the currently selected
+	 * item.
+	 */
+	int mSelectedPosition = INVALID_POSITION;
+
+	/**
+	 * The item id of the currently selected item.
+	 */
+	long mSelectedRowId = INVALID_ROW_ID;
 	/** 元素之间的上边距 */
 	private int mItemTopMargin;
 	/** 元素之间的下边距 */
@@ -251,6 +270,47 @@ public class StaggeredGridView extends ViewGroup {
 	 * Rectangle used for hit testing children
 	 */
 	private Rect mTouchFrame;
+	/**
+	 * Regular layout - usually an unsolicited layout from the view system
+	 */
+	static final int LAYOUT_NORMAL = 0;
+
+	/**
+	 * Show the first item
+	 */
+	static final int LAYOUT_FORCE_TOP = 1;
+
+	/**
+	 * Force the selected item to be on somewhere on the screen
+	 */
+	static final int LAYOUT_SET_SELECTION = 2;
+
+	/**
+	 * Show the last item
+	 */
+	static final int LAYOUT_FORCE_BOTTOM = 3;
+
+	/**
+	 * Make a mSelectedItem appear in a specific location and build the rest of
+	 * the views from there. The top is specified by mSpecificTop.
+	 */
+	static final int LAYOUT_SPECIFIC = 4;
+
+	/**
+	 * Layout to sync as a result of a data change. Restore mSyncPosition to
+	 * have its top at mSpecificTop
+	 */
+	static final int LAYOUT_SYNC = 5;
+
+	/**
+	 * Layout as a result of using the navigation keys
+	 */
+	static final int LAYOUT_MOVE_SELECTION = 6;
+
+	/**
+	 * Controls how the next layout will happen
+	 */
+	int mLayoutMode = LAYOUT_NORMAL;
 
 	private static final class LayoutRecord {
 		public int column;
@@ -662,7 +722,7 @@ public class StaggeredGridView extends ViewGroup {
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		if (mFastScroller != null) {
-			boolean intercepted = mFastScroller.onInterceptTouchEvent(ev);
+			boolean intercepted = mFastScroller.onTouchEvent(ev);
 			if (intercepted) {
 				return true;
 			}
@@ -811,6 +871,7 @@ public class StaggeredGridView extends ViewGroup {
 									.removeCallbacks(mTouchMode == TOUCH_MODE_DOWN ? mPendingCheckForTap
 											: mPendingCheckForLongPress);
 						}
+						mLayoutMode = LAYOUT_NORMAL;
 
 						if (!mDataChanged && mAdapter.isEnabled(motionPosition)) {
 							mTouchMode = TOUCH_MODE_TAP;
@@ -869,9 +930,85 @@ public class StaggeredGridView extends ViewGroup {
 		return mItemCount;
 	}
 
+	private int getTopSelectionPixel(int childrenTop, int fadingEdgeLength,
+			int selectedPosition) {
+		// first pixel we can draw the selection into
+		int topSelectionPixel = childrenTop;
+		if (selectedPosition > 0) {
+			topSelectionPixel += fadingEdgeLength;
+		}
+		return topSelectionPixel;
+	}
+
+	private int getBottomSelectionPixel(int childrenBottom,
+			int fadingEdgeLength, int selectedPosition) {
+		int bottomSelectionPixel = childrenBottom;
+		if (selectedPosition != mItemCount - 1) {
+			bottomSelectionPixel -= fadingEdgeLength;
+		}
+		return bottomSelectionPixel;
+	}
+
+	int lookForSelectablePosition(int position, boolean lookDown) {
+		final ListAdapter adapter = mAdapter;
+		if (adapter == null || isInTouchMode()) {
+			return INVALID_POSITION;
+		}
+
+		final int count = adapter.getCount();
+		if (!mAreAllItemsSelectable) {
+			if (lookDown) {
+				position = Math.max(0, position);
+				while (position < count && !adapter.isEnabled(position)) {
+					position++;
+				}
+			} else {
+				position = Math.min(position, count - 1);
+				while (position >= 0 && !adapter.isEnabled(position)) {
+					position--;
+				}
+			}
+
+			if (position < 0 || position >= count) {
+				return INVALID_POSITION;
+			}
+			return position;
+		} else {
+			if (position < 0 || position >= count) {
+				return INVALID_POSITION;
+			}
+			return position;
+		}
+	}
+
+	void setNextSelectedPositionInt(int position) {
+		mNextSelectedPosition = position;
+		mNextSelectedRowId = getItemIdAtPosition(position);
+	}
+
+	public long getItemIdAtPosition(int position) {
+		ListAdapter adapter = getAdapter();
+		return (adapter == null || position < 0) ? INVALID_ROW_ID : adapter
+				.getItemId(position);
+	}
+
 	// TODO:
 	public void setSelection(int position) {
+		if (mAdapter == null) {
+			return;
+		}
 
+		if (!isInTouchMode()) {
+			position = lookForSelectablePosition(position, true);
+			if (position >= 0) {
+				setNextSelectedPositionInt(position);
+			}
+		}
+		Log.d(TAG, "===========position:" + position);
+		if (position >= 0) {
+
+			requestLayout();
+		}
 	}
 
 	void reportScrollStateChange(int newState) {
@@ -940,11 +1077,24 @@ public class StaggeredGridView extends ViewGroup {
 		} else {
 			mSelectorRect.setEmpty();
 		}
+		invokeOnItemScrollListener();
 		// 显示scrollbar
 		if (!awakenScrollBars()) {
 			invalidate();
 		}
 		return deltaY == 0 || movedBy != 0;
+	}
+
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		if (getChildCount() > 0) {
+			mDataChanged = true;
+			// rememberSyncState();//TODO:
+		}
+
+		if (mFastScroller != null) {
+			mFastScroller.onSizeChanged(w, h, oldw, oldh);
+		}
 	}
 
 	private final boolean contentFits() {
@@ -2378,6 +2528,7 @@ public class StaggeredGridView extends ViewGroup {
 			scrap.remove(index);
 			return result;
 		}
+
 	}
 
 	private class AdapterDataSetObserver extends DataSetObserver {
