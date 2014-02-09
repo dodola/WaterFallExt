@@ -56,8 +56,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ListAdapter;
 
-/**
- * ListView and GridView just not complex enough? Try StaggeredGridView!
+/** ListView and GridView just not complex enough? Try StaggeredGridView!
  * 
  * <p>
  * StaggeredGridView presents a multi-column grid with consistent column sizes
@@ -70,8 +69,7 @@ import android.widget.ListAdapter;
  * Item views may span multiple columns as specified by their
  * {@link LayoutParams}. The attribute <code>android:layout_span</code> may be
  * used when inflating item views from xml.
- * </p>
- */
+ * </p> */
 public class StaggeredGridView extends ViewGroup {
 	private static final String TAG = "StaggeredGridView";
 
@@ -174,142 +172,92 @@ public class StaggeredGridView extends ViewGroup {
 	private boolean mAreAllItemsSelectable = true;
 	int mNextSelectedPosition = INVALID_POSITION;
 	public static final long INVALID_ROW_ID = Long.MIN_VALUE;
-	/**
-	 * The item id of the item to select during the next layout.
-	 */
+	/** The item id of the item to select during the next layout. */
 	long mNextSelectedRowId = INVALID_ROW_ID;
 
-	/**
-	 * The position within the adapter's data set of the currently selected
-	 * item.
-	 */
+	/** The position within the adapter's data set of the currently selected
+	 * item. */
 	int mSelectedPosition = INVALID_POSITION;
 
-	/**
-	 * The item id of the currently selected item.
-	 */
+	/** The item id of the currently selected item. */
 	long mSelectedRowId = INVALID_ROW_ID;
-	/** ÔªËØÖ®¼äµÄÉÏ±ß¾à */
-	private int mItemTopMargin;
-	/** ÔªËØÖ®¼äµÄÏÂ±ß¾à */
-	private int mItemBottomMargin;
-	/** ÔªËØÖ®¼äµÄ×ó±ß¾à */
-	private int mItemLeftMargin;
-	/** ÔªËØÖ®¼äµÄÓÒ±ß¾à */
-	private int mItemRightMargin;
+	// /** Ôªï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½Ï±ß¾ï¿½ */
+	// private int mItemTopMargin;
+	// /** Ôªï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½Â±ß¾ï¿½ */
+	// private int mItemBottomMargin;
+	// /** Ôªï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ß¾ï¿½ */
+	// private int mItemLeftMargin;
+	// /** Ôªï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½Ò±ß¾ï¿½ */
+	// private int mItemRightMargin;
 
 	private int mLastScrollState = OnScrollListener.SCROLL_STATE_IDLE;
-	/**
-	 * The drawable used to draw the selector
-	 */
+	/** The drawable used to draw the selector */
 	Drawable mSelector;
 
 	boolean mDrawSelectorOnTop = false;
 
-	/**
-	 * Delayed action for touch mode.
-	 */
+	/** Delayed action for touch mode. */
 	private Runnable mTouchModeReset;
 
-	/**
-	 * The selection's left padding
-	 */
+	/** The selection's left padding */
 	int mSelectionLeftPadding = 0;
 
-	/**
-	 * The selection's top padding
-	 */
+	/** The selection's top padding */
 	int mSelectionTopPadding = 0;
 
-	/**
-	 * The selection's right padding
-	 */
+	/** The selection's right padding */
 	int mSelectionRightPadding = 0;
 
-	/**
-	 * The selection's bottom padding
-	 */
+	/** The selection's bottom padding */
 	int mSelectionBottomPadding = 0;
 
-	/**
-	 * The select child's view (from the adapter's getView) is enabled.
-	 */
+	/** The select child's view (from the adapter's getView) is enabled. */
 	private boolean mIsChildViewEnabled;
 
-	/**
-	 * Defines the selector's location and dimension at drawing time
-	 */
+	/** Defines the selector's location and dimension at drawing time */
 	Rect mSelectorRect = new Rect();
 
-	/**
-	 * The current position of the selector in the list.
-	 */
+	/** The current position of the selector in the list. */
 	int mSelectorPosition = INVALID_POSITION;
 
-	/**
-	 * The listener that receives notifications when an item is clicked.
-	 */
+	/** The listener that receives notifications when an item is clicked. */
 	OnItemClickListener mOnItemClickListener;
 
-	/**
-	 * The listener that receives notifications when an item is long clicked.
-	 */
+	/** The listener that receives notifications when an item is long clicked. */
 	OnItemLongClickListener mOnItemLongClickListener;
 
-	/**
-	 * The last CheckForLongPress runnable we posted, if any
-	 */
+	/** The last CheckForLongPress runnable we posted, if any */
 	private CheckForLongPress mPendingCheckForLongPress;
 
-	/**
-	 * Acts upon click
-	 */
+	/** Acts upon click */
 	private PerformClick mPerformClick;
 
-	/**
-	 * Rectangle used for hit testing children
-	 */
+	/** Rectangle used for hit testing children */
 	private Rect mTouchFrame;
-	/**
-	 * Regular layout - usually an unsolicited layout from the view system
-	 */
+	/** Regular layout - usually an unsolicited layout from the view system */
 	static final int LAYOUT_NORMAL = 0;
 
-	/**
-	 * Show the first item
-	 */
+	/** Show the first item */
 	static final int LAYOUT_FORCE_TOP = 1;
 
-	/**
-	 * Force the selected item to be on somewhere on the screen
-	 */
+	/** Force the selected item to be on somewhere on the screen */
 	static final int LAYOUT_SET_SELECTION = 2;
 
-	/**
-	 * Show the last item
-	 */
+	/** Show the last item */
 	static final int LAYOUT_FORCE_BOTTOM = 3;
 
-	/**
-	 * Make a mSelectedItem appear in a specific location and build the rest of
-	 * the views from there. The top is specified by mSpecificTop.
-	 */
+	/** Make a mSelectedItem appear in a specific location and build the rest of
+	 * the views from there. The top is specified by mSpecificTop. */
 	static final int LAYOUT_SPECIFIC = 4;
 
-	/**
-	 * Layout to sync as a result of a data change. Restore mSyncPosition to
-	 * have its top at mSpecificTop
-	 */
+	/** Layout to sync as a result of a data change. Restore mSyncPosition to
+	 * have its top at mSpecificTop */
 	static final int LAYOUT_SYNC = 5;
 
-	/**
-	 * Layout as a result of using the navigation keys
-	 */
+	/** Layout as a result of using the navigation keys */
 	static final int LAYOUT_MOVE_SELECTION = 6;
 
-	/**
-	 * Controls how the next layout will happen
-	 */
+	/** Controls how the next layout will happen */
 	int mLayoutMode = LAYOUT_NORMAL;
 
 	private static final class LayoutRecord {
@@ -374,27 +322,20 @@ public class StaggeredGridView extends ViewGroup {
 
 	public interface OnScrollListener {
 
-		/**
-		 * The view is not scrolling. Note navigating the list using the
+		/** The view is not scrolling. Note navigating the list using the
 		 * trackball counts as being in the idle state since these transitions
-		 * are not animated.
-		 */
+		 * are not animated. */
 		public static int SCROLL_STATE_IDLE = 0;
 
-		/**
-		 * The user is scrolling using touch, and their finger is still on the
-		 * screen
-		 */
+		/** The user is scrolling using touch, and their finger is still on the
+		 * screen */
 		public static int SCROLL_STATE_TOUCH_SCROLL = 1;
 
-		/**
-		 * The user had previously been scrolling using touch and had performed
-		 * a fling. The animation is now coasting to a stop
-		 */
+		/** The user had previously been scrolling using touch and had performed
+		 * a fling. The animation is now coasting to a stop */
 		public static int SCROLL_STATE_FLING = 2;
 
-		/**
-		 * Callback method to be invoked while the list view or grid view is
+		/** Callback method to be invoked while the list view or grid view is
 		 * being scrolled. If the view is being scrolled, this method will be
 		 * called before the next frame of the scroll is rendered. In
 		 * particular, it will be called before any calls to
@@ -407,12 +348,10 @@ public class StaggeredGridView extends ViewGroup {
 		 *            The current scroll state. One of
 		 *            {@link #SCROLL_STATE_IDLE},
 		 *            {@link #SCROLL_STATE_TOUCH_SCROLL} or
-		 *            {@link #SCROLL_STATE_IDLE}.
-		 */
+		 *            {@link #SCROLL_STATE_IDLE}. */
 		public void onScrollStateChanged(StaggeredGridView view, int scrollState);
 
-		/**
-		 * Callback method to be invoked when the list or grid has been
+		/** Callback method to be invoked when the list or grid has been
 		 * scrolled. This will be called after the scroll has completed
 		 * 
 		 * @param view
@@ -423,8 +362,7 @@ public class StaggeredGridView extends ViewGroup {
 		 * @param visibleItemCount
 		 *            the number of visible cells
 		 * @param totalItemCount
-		 *            the number of items in the list adaptor
-		 */
+		 *            the number of items in the list adaptor */
 		public void onScroll(StaggeredGridView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount);
 	}
@@ -581,16 +519,14 @@ public class StaggeredGridView extends ViewGroup {
 		return result;
 	}
 
-	/**
-	 * Set a fixed number of columns for this grid. Space will be divided evenly
+	/** Set a fixed number of columns for this grid. Space will be divided evenly
 	 * among all columns, respecting the item margin between columns. The
 	 * default is 2. (If it were 1, perhaps you should be using a
 	 * {@link android.widget.ListView ListView}.)
 	 * 
 	 * @param colCount
 	 *            Number of columns to display.
-	 * @see #setMinColumnWidth(int)
-	 */
+	 * @see #setMinColumnWidth(int) */
 	public void setColumnCount(int colCount) {
 		if (colCount < 1 && colCount != COLUMN_COUNT_AUTO) {
 			throw new IllegalArgumentException(
@@ -607,56 +543,52 @@ public class StaggeredGridView extends ViewGroup {
 		return mColCount;
 	}
 
-	/**
-	 * Set a minimum column width for
+	/** Set a minimum column width for
 	 * 
-	 * @param minColWidth
-	 */
+	 * @param minColWidth */
 	public void setMinColumnWidth(int minColWidth) {
 		mMinColWidth = minColWidth;
 		setColumnCount(COLUMN_COUNT_AUTO);
 	}
 
-	/**
-	 * ÉèÖÃÔªËØÖ®¼äµÄ¼ä¾à
-	 * 
-	 * @param left
-	 *            ×ó¼ä¾à
-	 * @param top
-	 *            ÉÏ¼ä¾à
-	 * @param right
-	 *            ÓÒ¼ä¾à
-	 * @param bottom
-	 *            ÏÂ¼ä¾à
-	 */
-	public void setItemMargin(int left, int top, int right, int bottom) {
-		final boolean needsPopulate = (left != mItemLeftMargin)
-				|| (top != mItemTopMargin) || (right != mItemRightMargin)
-				|| (bottom != mItemBottomMargin);
-		mItemLeftMargin = left;
-		mItemRightMargin = right;
-		mItemTopMargin = top;
-		mItemBottomMargin = bottom;
-		if (needsPopulate) {
-			populate(false);
-		}
-	}
+	// /**
+	// * ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ö®ï¿½ï¿½Ä¼ï¿½ï¿½
+	// *
+	// * @param left
+	// * ï¿½ï¿½ï¿½ï¿½
+	// * @param top
+	// * ï¿½Ï¼ï¿½ï¿½
+	// * @param right
+	// * ï¿½Ò¼ï¿½ï¿½
+	// * @param bottom
+	// * ï¿½Â¼ï¿½ï¿½
+	// */
+	// public void setItemMargin(int left, int top, int right, int bottom) {
+	// final boolean needsPopulate = (left != mItemLeftMargin)
+	// || (top != mItemTopMargin) || (right != mItemRightMargin)
+	// || (bottom != mItemBottomMargin);
+	// mItemLeftMargin = left;
+	// mItemRightMargin = right;
+	// mItemTopMargin = top;
+	// mItemBottomMargin = bottom;
+	// if (needsPopulate) {
+	// populate(false);
+	// }
+	// }
+	//
+	// /**
+	// * ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ö®ï¿½ï¿½Ä¼ï¿½ï¿½
+	// *
+	// * @param margin
+	// */
+	// public void setItemMargin(int margin) {
+	// setItemMargin(margin, margin, margin, margin);
+	// }
 
-	/**
-	 * ÉèÖÃÔªËØÖ®¼äµÄ¼ä¾à
-	 * 
-	 * @param margin
-	 */
-	public void setItemMargin(int margin) {
-		setItemMargin(margin, margin, margin, margin);
-	}
-
-	/**
-	 * Return the first adapter position with a view currently attached as a
+	/** Return the first adapter position with a view currently attached as a
 	 * child view of this grid.
 	 * 
-	 * @return the adapter position represented by the view at getChildAt(0).
-	 */
+	 * @return the adapter position represented by the view at getChildAt(0). */
 	public int getFirstPosition() {
 		return mFirstPosition;
 	}
@@ -1006,7 +938,8 @@ public class StaggeredGridView extends ViewGroup {
 		}
 		Log.d(TAG, "===========position:" + position);
 		if (position >= 0) {
-
+			mLayoutMode = LAYOUT_SPECIFIC;
+			// mSpecificTop = mItemTops[position];
 			requestLayout();
 		}
 	}
@@ -1020,13 +953,10 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * 
-	 * @param deltaY
+	/** @param deltaY
 	 *            Pixels that content should move by
 	 * @return true if the movement completed, false if it was stopped
-	 *         prematurely.
-	 */
+	 *         prematurely. */
 	private boolean trackMotionScroll(int deltaY, boolean allowOverScroll) {
 		final boolean contentFits = contentFits();
 		final int allowOverhang = Math.abs(deltaY);
@@ -1038,12 +968,11 @@ public class StaggeredGridView extends ViewGroup {
 			final boolean up;
 			mPopulating = true;
 			if (deltaY > 0) {
-				overhang = fillUp(mFirstPosition - 1, allowOverhang)
-						+ mItemTopMargin;
+				overhang = fillUp(mFirstPosition - 1, allowOverhang);
 				up = true;
 			} else {
 				overhang = fillDown(mFirstPosition + getChildCount(),
-						allowOverhang) + mItemBottomMargin;
+						allowOverhang);
 				up = false;
 			}
 			movedBy = Math.min(overhang, allowOverhang);
@@ -1078,7 +1007,7 @@ public class StaggeredGridView extends ViewGroup {
 			mSelectorRect.setEmpty();
 		}
 		invokeOnItemScrollListener();
-		// ÏÔÊ¾scrollbar
+		// ï¿½ï¿½Ê¾scrollbar
 		if (!awakenScrollBars()) {
 			invalidate();
 		}
@@ -1129,15 +1058,13 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * Important: this method will leave offscreen views attached if they are
+	/** Important: this method will leave offscreen views attached if they are
 	 * required to maintain the invariant that child view with index i is always
-	 * the view corresponding to position mFirstPosition + i.
-	 */
+	 * the view corresponding to position mFirstPosition + i. */
 	private void recycleOffscreenViews() {
 		final int height = getHeight();
-		final int clearAbove = -mItemTopMargin;
-		final int clearBelow = height + mItemBottomMargin;
+		final int clearAbove = 0;
+		final int clearBelow = height;
 		for (int i = getChildCount() - 1; i >= 0; i--) {
 			final View child = getChildAt(i);
 			if (child.getTop() <= clearBelow) {
@@ -1183,8 +1110,8 @@ public class StaggeredGridView extends ViewGroup {
 			for (int i = 0; i < childCount; i++) {
 				final View child = getChildAt(i);
 				final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-				final int top = child.getTop() - mItemTopMargin;
-				final int bottom = child.getBottom();
+				final int top = child.getTop();// - mItemTopMargin;
+				final int bottom = child.getBottom();// - mItemBottomMargin;
 				final LayoutRecord rec = mLayoutRecords.get(mFirstPosition + i);
 
 				final int colEnd = lp.column + Math.min(mColCount, lp.span);
@@ -1430,23 +1357,19 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * Measure and layout all currently visible children.
+	/** Measure and layout all currently visible children.
 	 * 
 	 * @param queryAdapter
-	 *            true to requery the adapter for view data
-	 */
+	 *            true to requery the adapter for view data */
 	final void layoutChildren(boolean queryAdapter) {
 		final int paddingLeft = getPaddingLeft();
 		final int paddingRight = getPaddingRight();
-		// final int itemMargin = mItemMargin;
-		final int leftMargin = mItemLeftMargin;
-		final int rightMargin = mItemRightMargin;
-		final int topMargin = mItemTopMargin;
-		final int bottomMargin = mItemBottomMargin;
+		// final int leftMargin = mItemLeftMargin;
+		// final int rightMargin = mItemRightMargin;
+		// final int topMargin = mItemTopMargin;
+		// final int bottomMargin = mItemBottomMargin;
 
-		final int colWidth = (getWidth() - paddingLeft - paddingRight - (leftMargin + rightMargin)
-				* (mColCount - 1))
+		final int colWidth = (getWidth() - paddingLeft - paddingRight)
 				/ mColCount;
 		mColWidth = colWidth;
 		int rebuildLayoutRecordsBefore = -1;
@@ -1485,8 +1408,7 @@ public class StaggeredGridView extends ViewGroup {
 			}
 
 			final int span = Math.min(mColCount, lp.span);
-			final int widthSize = colWidth * span + (leftMargin + rightMargin)
-					* (span - 1);
+			final int widthSize = colWidth * span;
 
 			if (needsLayout) {
 				final int widthSpec = MeasureSpec.makeMeasureSpec(widthSize,
@@ -1505,13 +1427,12 @@ public class StaggeredGridView extends ViewGroup {
 			}
 
 			int childTop = mItemBottoms[col] > Integer.MIN_VALUE ? mItemBottoms[col]
-					+ bottomMargin
 					: child.getTop();
 
 			if (span > 1) {
 				int lowest = childTop;
 				for (int j = col + 1; j < col + span; j++) {
-					final int bottom = mItemBottoms[j] + bottomMargin;
+					final int bottom = mItemBottoms[j];// + bottomMargin;
 					if (bottom > lowest) {
 						lowest = bottom;
 					}
@@ -1521,7 +1442,7 @@ public class StaggeredGridView extends ViewGroup {
 
 			final int childHeight = child.getMeasuredHeight();
 			final int childBottom = childTop + childHeight;
-			final int childLeft = paddingLeft + col * (colWidth + leftMargin);
+			final int childLeft = paddingLeft + col * (colWidth);
 			final int childRight = childLeft + child.getMeasuredWidth();
 			child.layout(childLeft, childTop, childRight, childBottom);
 
@@ -1612,9 +1533,7 @@ public class StaggeredGridView extends ViewGroup {
 		invokeOnItemScrollListener();
 	}
 
-	/**
-	 * Notify our scroll listener (if there is one) of a change in scroll state
-	 */
+	/** Notify our scroll listener (if there is one) of a change in scroll state */
 	void invokeOnItemScrollListener() {
 		if (mFastScroller != null) {
 			mFastScroller.onScroll(this, mFirstPosition, getChildCount(),
@@ -1626,28 +1545,21 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * Should be called with mPopulating set to true
+	/** Should be called with mPopulating set to true
 	 * 
 	 * @param fromPosition
 	 *            Position to start filling from
 	 * @param overhang
 	 *            the number of extra pixels to fill beyond the current top edge
 	 * @return the max overhang beyond the beginning of the view of any added
-	 *         items at the top
-	 */
+	 *         items at the top */
 	final int fillUp(int fromPosition, int overhang) {
 
 		final int paddingLeft = getPaddingLeft();
 		final int paddingRight = getPaddingRight();
 		// final int itemMargin = mItemMargin;
-		final int leftMargin = mItemLeftMargin;
-		final int rightMargin = mItemRightMargin;
-		final int topMargin = mItemTopMargin;
-		final int bottomMargin = mItemBottomMargin;
 
-		final int colWidth = (getWidth() - paddingLeft - paddingRight - (leftMargin + rightMargin)
-				* (mColCount - 1))
+		final int colWidth = (getWidth() - paddingLeft - paddingRight)
 				/ mColCount;
 		mColWidth = colWidth;
 		final int gridTop = getPaddingTop();
@@ -1690,8 +1602,7 @@ public class StaggeredGridView extends ViewGroup {
 			}
 
 			final int span = Math.min(mColCount, lp.span);
-			final int widthSize = colWidth * span + (leftMargin + rightMargin)
-					* (span - 1);
+			final int widthSize = colWidth * span;
 			final int widthSpec = MeasureSpec.makeMeasureSpec(widthSize,
 					MeasureSpec.EXACTLY);
 
@@ -1761,7 +1672,7 @@ public class StaggeredGridView extends ViewGroup {
 			int childBottom = startFrom;
 			int childTop = childBottom - childHeight;
 			final int childLeft = paddingLeft + nextCol
-					* (colWidth + (leftMargin + rightMargin));
+					* (colWidth);
 			final int childRight = childLeft + child.getMeasuredWidth();
 
 			// if(position == 0){
@@ -1774,8 +1685,7 @@ public class StaggeredGridView extends ViewGroup {
 			child.layout(childLeft, childTop, childRight, childBottom);
 
 			for (int i = nextCol; i < nextCol + span; i++) {
-				mItemTops[i] = childTop - rec.getMarginAbove(i - nextCol)
-						- (topMargin + bottomMargin);
+				mItemTops[i] = childTop - rec.getMarginAbove(i - nextCol);
 			}
 
 			nextCol = getNextColumnUp();
@@ -1813,7 +1723,7 @@ public class StaggeredGridView extends ViewGroup {
 
 					// determine the column by cycling widths
 					while (left > col
-							* (this.mColWidth + (mItemLeftMargin + mItemRightMargin) * 2)
+							* (this.mColWidth)
 							+ getPaddingLeft()) {
 						col++;
 					}
@@ -1829,8 +1739,7 @@ public class StaggeredGridView extends ViewGroup {
 		return null;
 	}
 
-	/**
-	 * Should be called with mPopulating set to true
+	/** Should be called with mPopulating set to true
 	 * 
 	 * @param fromPosition
 	 *            Position to start filling from
@@ -1838,20 +1747,14 @@ public class StaggeredGridView extends ViewGroup {
 	 *            the number of extra pixels to fill beyond the current bottom
 	 *            edge
 	 * @return the max overhang beyond the end of the view of any added items at
-	 *         the bottom
-	 */
+	 *         the bottom */
 	final int fillDown(int fromPosition, int overhang) {
 
 		final int paddingLeft = getPaddingLeft();
 		final int paddingRight = getPaddingRight();
 		// final int itemMargin = mItemMargin;
-		final int leftMargin = mItemLeftMargin;
-		final int rightMargin = mItemRightMargin;
-		final int topMargin = mItemTopMargin;
-		final int bottomMargin = mItemBottomMargin;
 
-		final int colWidth = (getWidth() - paddingLeft - paddingRight - (leftMargin + rightMargin)
-				* (mColCount - 1))
+		final int colWidth = (getWidth() - paddingLeft - paddingRight)
 				/ mColCount;
 		final int gridBottom = getHeight() - getPaddingBottom();
 		final int fillTo = gridBottom + overhang;
@@ -1880,8 +1783,7 @@ public class StaggeredGridView extends ViewGroup {
 			}
 
 			final int span = Math.min(mColCount, lp.span);
-			final int widthSize = colWidth * span + (leftMargin + rightMargin)
-					* (span - 1);
+			final int widthSize = colWidth * span;
 			final int widthSpec = MeasureSpec.makeMeasureSpec(widthSize,
 					MeasureSpec.EXACTLY);
 
@@ -1946,12 +1848,11 @@ public class StaggeredGridView extends ViewGroup {
 				startFrom = mItemBottoms[nextCol];
 			}
 
-			final int childTop = startFrom + topMargin;
-			final int childBottom = childTop + childHeight - bottomMargin;
+			final int childTop = startFrom;
+			final int childBottom = childTop + childHeight;
 			final int childLeft = paddingLeft + nextCol
-					* (colWidth + leftMargin);
-			final int childRight = childLeft + child.getMeasuredWidth()
-					- rightMargin;
+					* (colWidth);
+			final int childRight = childLeft + child.getMeasuredWidth();
 			child.layout(childLeft, childTop, childRight, childBottom);
 
 			// add the position to the mapping
@@ -1986,9 +1887,7 @@ public class StaggeredGridView extends ViewGroup {
 		return lowestView - gridBottom;
 	}
 
-	/**
-	 * for debug purposes
-	 */
+	/** for debug purposes */
 	private void displayMapping() {
 		Log.w("DISPLAY", "MAP ****************");
 		StringBuilder sb = new StringBuilder();
@@ -2008,10 +1907,8 @@ public class StaggeredGridView extends ViewGroup {
 		Log.w("DISPLAY", "MAP END ****************");
 	}
 
-	/**
-	 * @return column that the next view filling upwards should occupy. This is
-	 *         the bottom-most position available for a single-column item.
-	 */
+	/** @return column that the next view filling upwards should occupy. This is
+	 *         the bottom-most position available for a single-column item. */
 	final int getNextColumnUp() {
 		int result = -1;
 		int bottomMost = Integer.MIN_VALUE;
@@ -2027,13 +1924,11 @@ public class StaggeredGridView extends ViewGroup {
 		return result;
 	}
 
-	/**
-	 * Return a LayoutRecord for the given position
+	/** Return a LayoutRecord for the given position
 	 * 
 	 * @param position
 	 * @param span
-	 * @return
-	 */
+	 * @return */
 	final LayoutRecord getNextRecordUp(int position, int span) {
 		LayoutRecord rec = mLayoutRecords.get(position);
 		if (rec == null) {
@@ -2073,10 +1968,8 @@ public class StaggeredGridView extends ViewGroup {
 		return rec;
 	}
 
-	/**
-	 * @return column that the next view filling downwards should occupy. This
-	 *         is the top-most position available.
-	 */
+	/** @return column that the next view filling downwards should occupy. This is
+	 *         the top-most position available. */
 	final int getNextColumnDown(int position) {
 		int result = -1;
 		int topMost = Integer.MAX_VALUE;
@@ -2133,16 +2026,14 @@ public class StaggeredGridView extends ViewGroup {
 		return rec;
 	}
 
-	/**
-	 * Obtain a populated view from the adapter. If optScrap is non-null and is
+	/** Obtain a populated view from the adapter. If optScrap is non-null and is
 	 * not reused it will be placed in the recycle bin.
 	 * 
 	 * @param position
 	 *            position to get view for
 	 * @param optScrap
 	 *            Optional scrap view; will be reused if possible
-	 * @return A new view, a recycled view from mRecycler, or optScrap
-	 */
+	 * @return A new view, a recycled view from mRecycler, or optScrap */
 	final View obtainView(int position, View optScrap) {
 
 		View view = mRecycler.getTransientStateView(position);
@@ -2212,10 +2103,8 @@ public class StaggeredGridView extends ViewGroup {
 		populate(adapter != null);
 	}
 
-	/**
-	 * Clear all state because the grid will be used for a completely different
-	 * set of data.
-	 */
+	/** Clear all state because the grid will be used for a completely different
+	 * set of data. */
 	private void clearAllState() {
 		// Clear all layout records and views
 		mLayoutRecords.clear();
@@ -2231,9 +2120,7 @@ public class StaggeredGridView extends ViewGroup {
 		mSelectorPosition = INVALID_POSITION;
 	}
 
-	/**
-	 * Reset all internal state to be at the top of the grid.
-	 */
+	/** Reset all internal state to be at the top of the grid. */
 	private void resetStateForGridTop() {
 		// Reset mItemTops and mItemBottoms
 		final int colCount = mColCount;
@@ -2251,10 +2138,8 @@ public class StaggeredGridView extends ViewGroup {
 			Arrays.fill(mRestoreOffsets, 0);
 	}
 
-	/**
-	 * Scroll the list so the first visible position in the grid is the first
-	 * item in the adapter.
-	 */
+	/** Scroll the list so the first visible position in the grid is the first
+	 * item in the adapter. */
 	public void setSelectionToTop() {
 		// Clear out the views (but don't clear out the layout records or
 		// recycler because the data
@@ -2313,13 +2198,13 @@ public class StaggeredGridView extends ViewGroup {
 
 						// determine the column by cycling widths
 						while (left > col
-								* (this.mColWidth + (mItemRightMargin + mItemLeftMargin) * 2)
+								* (this.mColWidth)
 								+ getPaddingLeft()) {
 							col++;
 						}
 
 						topOffsets[col] = getChildAt(i).getTop()
-								- (mItemTopMargin + mItemBottomMargin)
+
 								- getPaddingTop();
 					}
 
@@ -2368,29 +2253,19 @@ public class StaggeredGridView extends ViewGroup {
 
 		private static final int SPAN_INDEX = 0;
 
-		/**
-		 * The number of columns this item should span
-		 */
+		/** The number of columns this item should span */
 		public int span = 1;
 
-		/**
-		 * Item position this view represents
-		 */
+		/** Item position this view represents */
 		int position;
 
-		/**
-		 * Type of this view as reported by the adapter
-		 */
+		/** Type of this view as reported by the adapter */
 		int viewType;
 
-		/**
-		 * The column this view is occupying
-		 */
+		/** The column this view is occupying */
 		int column;
 
-		/**
-		 * The stable ID of the item this view displays
-		 */
+		/** The stable ID of the item this view displays */
 		long id = -1;
 
 		public LayoutParams(int height) {
@@ -2666,11 +2541,8 @@ public class StaggeredGridView extends ViewGroup {
 		};
 	}
 
-	/**
-	 * A base class for Runnables that will check that their view is still
-	 * attached to the original window as when the Runnable was created.
-	 * 
-	 */
+	/** A base class for Runnables that will check that their view is still
+	 * attached to the original window as when the Runnable was created. */
 	private class WindowRunnnable {
 		private int mOriginalAttachCount;
 
@@ -2714,20 +2586,16 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * The top-level view of a list item can implement this interface to allow
-	 * itself to modify the bounds of the selection shown for that item.
-	 */
+	/** The top-level view of a list item can implement this interface to allow
+	 * itself to modify the bounds of the selection shown for that item. */
 	public interface SelectionBoundsAdjuster {
-		/**
-		 * Called to allow the list item to adjust the bounds shown for its
+		/** Called to allow the list item to adjust the bounds shown for its
 		 * selection.
 		 * 
 		 * @param bounds
 		 *            On call, this contains the bounds the list has selected
 		 *            for the item (that is the bounds of the entire view). The
-		 *            values can be modified as desired.
-		 */
+		 *            values can be modified as desired. */
 		public void adjustListItemSelectionBounds(Rect bounds);
 	}
 
@@ -2923,8 +2791,7 @@ public class StaggeredGridView extends ViewGroup {
 		return mContextMenuInfo;
 	}
 
-	/**
-	 * Creates the ContextMenuInfo returned from {@link #getContextMenuInfo()}.
+	/** Creates the ContextMenuInfo returned from {@link #getContextMenuInfo()}.
 	 * This methods knows the view, position and ID of the item that received
 	 * the long press.
 	 * 
@@ -2935,18 +2802,14 @@ public class StaggeredGridView extends ViewGroup {
 	 * @param id
 	 *            The ID of the item that received the long press.
 	 * @return The extra information that should be returned by
-	 *         {@link #getContextMenuInfo()}.
-	 */
+	 *         {@link #getContextMenuInfo()}. */
 	ContextMenuInfo createContextMenuInfo(View view, int position, long id) {
 		return new AdapterContextMenuInfo(view, position, id);
 	}
 
-	/**
-	 * Extra menu information provided to the
+	/** Extra menu information provided to the
 	 * {@link android.view.View.OnCreateContextMenuListener#onCreateContextMenu(ContextMenu, View, ContextMenuInfo) }
-	 * callback when a context menu is brought up for this AdapterView.
-	 * 
-	 */
+	 * callback when a context menu is brought up for this AdapterView. */
 	public static class AdapterContextMenuInfo implements
 			ContextMenu.ContextMenuInfo {
 
@@ -2956,43 +2819,33 @@ public class StaggeredGridView extends ViewGroup {
 			this.id = id;
 		}
 
-		/**
-		 * The child view for which the context menu is being displayed. This
-		 * will be one of the children of this AdapterView.
-		 */
+		/** The child view for which the context menu is being displayed. This
+		 * will be one of the children of this AdapterView. */
 		public View targetView;
 
-		/**
-		 * The position in the adapter for which the context menu is being
-		 * displayed.
-		 */
+		/** The position in the adapter for which the context menu is being
+		 * displayed. */
 		public int position;
 
-		/**
-		 * The row id of the item for which the context menu is being displayed.
-		 */
+		/** The row id of the item for which the context menu is being displayed. */
 		public long id;
 	}
 
-	/**
-	 * Returns the selector {@link android.graphics.drawable.Drawable} that is
+	/** Returns the selector {@link android.graphics.drawable.Drawable} that is
 	 * used to draw the selection in the list.
 	 * 
-	 * @return the drawable used to display the selector
-	 */
+	 * @return the drawable used to display the selector */
 	public Drawable getSelector() {
 		return mSelector;
 	}
 
-	/**
-	 * Set a Drawable that should be used to highlight the currently selected
+	/** Set a Drawable that should be used to highlight the currently selected
 	 * item.
 	 * 
 	 * @param resID
 	 *            A Drawable resource to use as the selection highlight.
 	 * 
-	 * @attr ref android.R.styleable#AbsListView_listSelector
-	 */
+	 * @attr ref android.R.styleable#AbsListView_listSelector */
 	public void setSelector(int resID) {
 		setSelector(getResources().getDrawable(resID));
 	}
@@ -3048,22 +2901,18 @@ public class StaggeredGridView extends ViewGroup {
 		updateSelectorState();
 	}
 
-	/**
-	 * Indicates whether this view is in a state where the selector should be
+	/** Indicates whether this view is in a state where the selector should be
 	 * drawn. This will happen if we have focus but are not in touch mode, or we
 	 * are in the middle of displaying the pressed state for an item.
 	 * 
-	 * @return True if the selector should be shown
-	 */
+	 * @return True if the selector should be shown */
 	boolean shouldShowSelector() {
 		return ((hasFocus() && !isInTouchMode()) || touchModeDrawsInPressedState())
 				&& (mBeginClick);
 	}
 
-	/**
-	 * @return True if the current touch mode requires that we draw the selector
-	 *         in the pressed state.
-	 */
+	/** @return True if the current touch mode requires that we draw the selector
+	 *         in the pressed state. */
 	boolean touchModeDrawsInPressedState() {
 		// FIXME use isPressed for this
 		switch (mTouchMode) {
@@ -3075,29 +2924,24 @@ public class StaggeredGridView extends ViewGroup {
 		}
 	}
 
-	/**
-	 * Register a callback to be invoked when an item in this AdapterView has
+	/** Register a callback to be invoked when an item in this AdapterView has
 	 * been clicked.
 	 * 
 	 * @param listener
-	 *            The callback that will be invoked.
-	 */
+	 *            The callback that will be invoked. */
 	public void setOnItemClickListener(OnItemClickListener listener) {
 		mOnItemClickListener = listener;
 	}
 
-	/**
-	 * @return The callback to be invoked with an item in this AdapterView has
-	 *         been clicked, or null id no callback has been set.
-	 */
+	/** @return The callback to be invoked with an item in this AdapterView has
+	 *         been clicked, or null id no callback has been set. */
 	public final OnItemClickListener getOnItemClickListener() {
 		return mOnItemClickListener;
 	}
 
 	public interface OnItemClickListener {
 
-		/**
-		 * Callback method to be invoked when an item in this AdapterView has
+		/** Callback method to be invoked when an item in this AdapterView has
 		 * been clicked.
 		 * <p>
 		 * Implementers can call getItemAtPosition(position) if they need to
@@ -3111,19 +2955,16 @@ public class StaggeredGridView extends ViewGroup {
 		 * @param position
 		 *            The position of the view in the adapter.
 		 * @param id
-		 *            The row id of the item that was clicked.
-		 */
+		 *            The row id of the item that was clicked. */
 		void onItemClick(StaggeredGridView parent, View view, int position,
 				long id);
 	}
 
-	/**
-	 * Register a callback to be invoked when an item in this AdapterView has
+	/** Register a callback to be invoked when an item in this AdapterView has
 	 * been clicked and held
 	 * 
 	 * @param listener
-	 *            The callback that will run
-	 */
+	 *            The callback that will run */
 	public void setOnItemLongClickListener(OnItemLongClickListener listener) {
 		if (!isLongClickable()) {
 			setLongClickable(true);
@@ -3131,17 +2972,14 @@ public class StaggeredGridView extends ViewGroup {
 		mOnItemLongClickListener = listener;
 	}
 
-	/**
-	 * @return The callback to be invoked with an item in this AdapterView has
-	 *         been clicked and held, or null id no callback as been set.
-	 */
+	/** @return The callback to be invoked with an item in this AdapterView has
+	 *         been clicked and held, or null id no callback as been set. */
 	public final OnItemLongClickListener getOnItemLongClickListener() {
 		return mOnItemLongClickListener;
 	}
 
 	public interface OnItemLongClickListener {
-		/**
-		 * Callback method to be invoked when an item in this view has been
+		/** Callback method to be invoked when an item in this view has been
 		 * clicked and held.
 		 * 
 		 * Implementers can call getItemAtPosition(position) if they need to
@@ -3156,14 +2994,12 @@ public class StaggeredGridView extends ViewGroup {
 		 * @param id
 		 *            The row id of the item that was clicked
 		 * 
-		 * @return true if the callback consumed the long click, false otherwise
-		 */
+		 * @return true if the callback consumed the long click, false otherwise */
 		boolean onItemLongClick(StaggeredGridView parent, View view,
 				int position, long id);
 	}
 
-	/**
-	 * Maps a point to a position in the list.
+	/** Maps a point to a position in the list.
 	 * 
 	 * @param x
 	 *            X in local coordinate
@@ -3171,8 +3007,7 @@ public class StaggeredGridView extends ViewGroup {
 	 *            Y in local coordinate
 	 * @return The position of the item which contains the specified point, or
 	 *         {@link #INVALID_POSITION} if the point does not intersect an
-	 *         item.
-	 */
+	 *         item. */
 	public int pointToPosition(int x, int y) {
 		Rect frame = mTouchFrame;
 		if (frame == null) {
